@@ -9,6 +9,12 @@ sm_yield sm_test(sm_state* state)
 {
 	int* a = SM_VAR(10);
 
+	auto c = SM_SLOT(_test);
+	float* d = SM_SLOT(float);
+
+	*c = { 200, 300 };
+	*d = 10.f;
+
 	SM_BEGIN;
 		SM_YIELD(sm_continue());
 		*a = 5;

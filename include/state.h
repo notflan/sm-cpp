@@ -32,6 +32,7 @@ inline sm_yield sm_continue() { return (sm_yield)_sm_noop; }
 
 #define SM_VAR_EX(name, init) _sm_var(state, (name), (init)) //TODO: Replace `name' with (__LINE__ % _SM_STACK_SIZE) pseudo-hashmap
 #define SM_VAR(init) _sm_var<__LINE__, decltype(init)>(state, (init))
+#define SM_SLOT(T) _sm_var<__LINE__, T>(state, {})
 
 #define SM_BEGIN switch(state->current->pc) { case 0:
 #define SM_END } _sm_pop_stack(state); return sm_end()
