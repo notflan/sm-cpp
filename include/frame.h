@@ -3,7 +3,7 @@
 #include "box.h"
 
 #include <cstdint>
-#define _SM_STACK_SIZE 16
+#define _SM_STACK_SIZE 256
 
 struct _sm_user {
 	bool set ;//: 1; No need for these to be bitfield packed, there's an alignment hole here anyway.
@@ -74,7 +74,7 @@ inline void _sm_free(_sm_user* frame)
 }
 
 #define _SM_DEF(T) template<> T* _sm_init<T>(_sm_user* frame, T init); \
-		template<> T* _sm_get<T>(_sm_user* frame);
+		template<> T* _sm_get<T>(_sm_user* frame)
 
 _SM_DEF(char);
 _SM_DEF(unsigned char);
