@@ -1,0 +1,5 @@
+Example of a contextual state machine implementation in C(++)
+
+Goal:
+	A PoC full C implementation of 'generator' functions in C using the rather janky `_Generic`.
+	Currently the implementation is in an extremely small subset of C++ using only a few templates to get around C's janky implementation of generics.
