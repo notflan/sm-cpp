@@ -1,3 +1,4 @@
 *.o
 sm-*
 old-examples/
+obj/
