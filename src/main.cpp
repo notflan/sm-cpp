@@ -16,21 +16,32 @@ sm_yield sm_test(sm_state* state)
 	*d = 10.f;
 
 	SM_BEGIN;
-		SM_YIELD(sm_continue());
 		*a = 5;
 		SM_YIELD(sm_continue());
+		printf("a = %d\n", *a);
 		*a = 0;
+		SM_YIELD(sm_continue());
+		printf("a = %d\n", *a);
 	SM_END;
 }
 
 int main()
 {
 
+	auto state = sm_new();
+
+	sm_test(state);
+	sm_test(state);
+	sm_test(state);
+
+	sm_free(state);
+
+	/*
 	//TODO: `sm_state` creation/initialisation & freeing functions
 	//TODO: Test `sm_test`
 
 	_test hi = { 0, 0 };
 	auto _a = _sm_init(nullptr, hi);
-
+	*/
 	return 0;
 }

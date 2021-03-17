@@ -4,6 +4,8 @@
 
 #ifdef __cplusplus
 #include <cstdio>
+#define restrict __restrict__
+
 [[noreturn]]
 #else
 #include <stdio.h>

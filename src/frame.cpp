@@ -5,7 +5,6 @@
 #define BODY(T, U, nm) \
 template<> T* _sm_init<T>(_sm_user* frame, T init) \
 { \
-	printf("hi\n"); \
 	frame->free = false; \
 	frame-> nm = (U)init; \
 	return (T*)&frame-> nm; \

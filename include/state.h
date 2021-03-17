@@ -9,10 +9,12 @@ inline T* _sm_var(sm_state* state, U name, T init)
 {
 	auto val = &state->current->user.data[name];
 	bool set = val->set;
+
 	val->set = true;
-	val->free = false;
+	
+
 	return ( ! set ) ?
-		_sm_init<T>(val, init) :
+		(val->free = false, _sm_init<T>(val, init)) :
 		_sm_get<T>(val);
 }
 template<uint64_t name, typename T>
@@ -43,3 +45,5 @@ inline sm_yield sm_continue() { return (sm_yield)_sm_noop; }
 
 #define SM_YIELD(v) do { state->current->pc = __LINE__; return (sm_yield)(v); case __LINE__:; } while(0)
 
+sm_state* sm_new();
+void sm_free(sm_state* state);
