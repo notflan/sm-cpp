@@ -23,11 +23,16 @@
 //! Whereas `BOX_EX` and `box<T, true>` just use `bzero`.
 //!
 //! This API is **not** designed to work with C++ classes, constructors, or destructors. It is designed for C types and structs. Constructors and destructors are not called or supported. Only use with C-like (so-called ``POD'') types without con/destructors. No default initialisation is done (besides zero-initialisation when requested).
+//! To override this behaviour and use C++ new/delete instead of C malloc/free, you can define the _BOX_CPP preprocessor directive. However, C++ move semantics are not used here at all so using this API with non-POD types will cause lots of useless copy-constructors being called. Do not use this with non-trivially constructable types. Ideally, only ever use C ("POD") types with this.
 
 #ifndef _BOX_H
 #define _BOX_H
 
 #ifdef __cplusplus
+
+#ifdef _BOX_CPP
+#warning "Using BOX with non-POD types is discouraged"
+#endif
 
 #include <cstdlib>
 #include <cstring>
@@ -36,7 +41,12 @@
 template<typename T, bool Zero = false>
 inline T* box()
 {
-	void* ptr = aligned_alloc(alignof(T), sizeof(T));
+	void* ptr = 
+#ifdef _BOX_CPP
+	new T();
+#else
+	aligned_alloc(alignof(T), sizeof(T));
+#endif
 	if constexpr(Zero) bzero(ptr, sizeof(T));
 
 	return (T*)ptr;
@@ -55,7 +65,11 @@ inline T unbox(T* boxed)
 {
 	T val = *boxed;
 	if constexpr(Zero) explicit_bzero((void*)boxed, sizeof(T));
+#ifdef _BOX_CPP
+	delete boxed;
+#else
 	free((void*)boxed);
+#endif
 	return val;
 }
 
