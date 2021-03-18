@@ -59,15 +59,9 @@ int main()
 	}
 
 	sm_free_output(&output);
+
 	sm_free_generator(gen);
 	sm_free_state(state);
 
-	/*
-	//TODO: `sm_state` creation/initialisation & freeing functions
-	//TODO: Test `sm_test`
-
-	_test hi = { 0, 0 };
-	auto _a = _sm_init(nullptr, hi);
-	*/
 	return 0;
 }
