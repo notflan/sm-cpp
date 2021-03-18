@@ -8,10 +8,10 @@
 #define _SM_KEY_SIZE (UINT64_MAX >> 2)
 
 struct _sm_user {
-	uint64_t set : 1;
-	uint64_t free : 1;
+	uint64_t set : 1;  // bool
+	uint64_t free : 1; // bool
 
-	uint64_t key : 62;
+	uint64_t key : 62; // Use the rest of the 7 byte hole here for the key.
 
 	union {
 		uint8_t _8;
@@ -33,9 +33,9 @@ struct _sm_user_page {
 };
 
 struct _sm_frame {
+	uint64_t pc;
 	_sm_user_page user;
 
-	uint64_t pc;
 	_sm_frame* prev;
 };
 

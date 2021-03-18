@@ -9,7 +9,7 @@ sm_yield _sm_noop(sm_state*)
 	return (sm_yield)nullptr;
 }
 
-sm_state* sm_new()
+sm_state* sm_new_state()
 {
 	auto state = box<sm_state>();
 	state->current = box<_sm_frame, true>();
@@ -39,7 +39,7 @@ inline static void _sm_free_all_pages(_sm_user_page* page)
 	}
 }
 
-void sm_free(sm_state* state)
+void sm_free_state(sm_state* state)
 {
 	_sm_frame* frame = unbox(state).current;
 
@@ -61,4 +61,11 @@ void _sm_pop_stack(sm_state* state)
 
 	_sm_free_all_pages(last.user.next);
 	_sm_free_page(&last.user);
+}
+
+void _sm_push_stack(sm_state* state)
+{
+	auto next = box<_sm_frame, true>();
+	next->prev = state->current;
+	state->current = next;
 }
