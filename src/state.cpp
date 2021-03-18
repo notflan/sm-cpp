@@ -23,6 +23,16 @@ inline static void sm_free_user(_sm_user* data)
 	}
 }
 
+void sm_free_output(_sm_user* data)
+{
+	if(!data) return;
+
+	if(data->set)
+		sm_free_user(data);
+	data->set = data->free = false;
+
+}
+
 inline static void _sm_free_page(_sm_user_page* page)
 {
 	for (int i=0;i<_SM_STACK_SIZE;i++) sm_free_user(&page->data[i]);
@@ -45,6 +55,11 @@ void sm_free_state(sm_state* state)
 
 	while(frame)
 	{
+		if(frame->rval) {
+			sm_free_user(frame->rval);
+			unbox(frame->rval);
+		}
+
 		_sm_free_all_pages(frame->user.next);
 		_sm_free_page(&frame->user);
 
@@ -59,6 +74,11 @@ void _sm_pop_stack(sm_state* state)
 	auto last = unbox(state->current);
 	state->current = last.prev;
 
+	if(last.rval)
+	{
+		sm_free_user(last.rval);
+		unbox(last.rval);
+	}
 	_sm_free_all_pages(last.user.next);
 	_sm_free_page(&last.user);
 }

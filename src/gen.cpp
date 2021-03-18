@@ -22,11 +22,16 @@ void sm_free_generator(sm_generator* gen)
 }
 
 // Returns false if the generator ends.
-bool sm_next(sm_generator** gen, sm_state* state)
+bool sm_next(sm_generator** gen, sm_state* state, _sm_user* output)
 {
 	if( !(*gen)->current) return false;
 
 	sm_yield next = (*gen)->current(state);
+
+	// Set the return value to `output`.
+	if(output && state->current->rval) *output = *state->current->rval;
+	else if(output) output->set = false;
+
 	switch((uintptr_t)next)
 	{
 		case 0:
