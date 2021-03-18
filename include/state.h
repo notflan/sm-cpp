@@ -77,5 +77,9 @@ inline sm_yield sm_continue() { return (sm_yield)_sm_noop; }
 
 #define SM_YIELD(v) do { state->current->pc = __LINE__; return (sm_yield)(v); case __LINE__:; } while(0)
 
+#define SM_GENERATOR(name) sm_yield name(sm_state* state)
+
+// ---
+
 sm_state* sm_new_state();
 void sm_free_state(sm_state* state);
