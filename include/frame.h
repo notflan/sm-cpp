@@ -41,11 +41,26 @@ struct _sm_frame {
 	_sm_frame* prev;
 };
 
+/// Options for `state`.
+struct _sm_state_opt
+{
+	/// Set the return value within a generator at every yield point, instead of just at the end of the function.
+	///  (default: true)
+	bool _opt_INTERMEDIATE_RETURNS;
+};
+
+extern const _sm_state_opt _sm_state_opt_default;
+ 
 struct sm_state {
-	
+
+	_sm_state_opt opt;
 
 	_sm_frame* current;
 };
+
+#define sm_state_setopt(state, name, value) ((state)->opt._opt_ ## name = (value))
+#define sm_state_getopt(state, name) ((state)->opt._opt_ ## name)
+
 
 template<typename T>
 inline T* _sm_init(_sm_user* frame, T init)
