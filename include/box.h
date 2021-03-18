@@ -31,7 +31,8 @@
 #ifdef __cplusplus
 
 #ifdef _BOX_CPP
-#warning "Using BOX with non-POD types is discouraged"
+#include <utility>
+#error "Using BOX with non-POD types causes memory leaks"
 #endif
 
 #include <cstdlib>
@@ -52,11 +53,23 @@ inline T* box()
 	return (T*)ptr;
 }
 
+#ifdef _BOX_CPP
+template<typename T>
+inline T* box(T&& val)
+{
+	return new T(std::move(val));
+}
+#endif
+
 template<typename T>
 inline T* box(T val)
 {
+#ifdef _BOX_CPP
+	T* ptr = new T(std::move(val));
+#else
 	T* ptr = box<T>();
 	*ptr = val;
+#endif
 	return ptr;
 }
 
