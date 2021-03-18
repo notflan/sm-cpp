@@ -74,6 +74,11 @@ void _sm_pop_stack(sm_state* state)
 	auto last = unbox(state->current);
 	state->current = last.prev;
 
+	if(last.rval)
+	{
+		sm_free_user(last.rval);
+		unbox(last.rval);
+	}
 	_sm_free_all_pages(last.user.next);
 	_sm_free_page(&last.user);
 }
