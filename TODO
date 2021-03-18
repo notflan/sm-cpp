@@ -1,0 +1,3 @@
+Update Makefile to build .a and .so files
+Namespace "box" for use outside of the library build
+Add a pure C (`extern "C"`) API for interfacing with generators from within C
