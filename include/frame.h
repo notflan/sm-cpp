@@ -3,11 +3,15 @@
 #include "box.h"
 
 #include <cstdint>
-#define _SM_STACK_SIZE 256
+#define _SM_STACK_SIZE 15
+
+#define _SM_KEY_SIZE (UINT64_MAX >> 2)
 
 struct _sm_user {
-	bool set ;//: 1; No need for these to be bitfield packed, there's an alignment hole here anyway.
-	bool free ;//: 1;
+	uint64_t set : 1;
+	uint64_t free : 1;
+
+	uint64_t key : 62;
 
 	union {
 		uint8_t _8;

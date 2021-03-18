@@ -4,23 +4,51 @@
 
 typedef void* (*sm_yield)(sm_state* state); //NOTE: This `void*` is a stand-in for this function returning itself.
 
+inline uint64_t _sm_confine_key(uint64_t ui)
+{
+	return ui & _SM_KEY_SIZE;
+}
+
+inline uint64_t _sm_compute_key(uint64_t name)
+{
+	return _sm_confine_key(name);
+}
+
+template<typename T, typename U>
+inline T* _sm_var(_sm_user_page* user, U name, T init)
+{
+	auto skey = name % _SM_STACK_SIZE;
+
+	auto val = &user->data[skey];
+
+	auto key = _sm_compute_key( (uint64_t)name );
+
+	bool set = val->set;
+
+	if(!set) {
+		val->set = true;
+		val->free = false;
+		val->key = key;
+		return _sm_init<T>(val, init);
+	}
+	else if(key == val->key) {
+		//TODO: Check equality of value somehow
+		return _sm_get<T>(val);
+	} else {
+		// Move to next page
+		if(!user->next) user->next = box<_sm_user_page, true>();
+		return _sm_var<T, U>(user->next, name, init);
+	}
+}
 template<typename T, typename U>
 inline T* _sm_var(sm_state* state, U name, T init)
 {
-	auto val = &state->current->user.data[name];
-	bool set = val->set;
-
-	val->set = true;
-	
-
-	return ( ! set ) ?
-		(val->free = false, _sm_init<T>(val, init)) :
-		_sm_get<T>(val);
+	return _sm_var<T,U>(&state->current->user, name, init);
 }
 template<uint64_t name, typename T>
 inline T* _sm_var(sm_state* state, T init)
 {
-	static_assert(name < _SM_STACK_SIZE, "Line pseudo-hashmap not yet implemented");
+	//static_assert(name < _SM_STACK_SIZE, "Line pseudo-hashmap not yet implemented");
 	return _sm_var(state, name, init);
 }
 
