@@ -1,6 +1,10 @@
 #include <state.h>
 #include "dev.h"
 
+const _sm_state_opt _sm_state_opt_default = {
+	._opt_INTERMEDIATE_RETURNS = true,
+};
+
 /// A generator that just returns `nullptr` (end). Used for yielding without calling in to another generator. 
 ///
 /// NOTE: To avoid uselessly creating a stack frame for calls to this generator, its address is (TODO) directly compared to when switching into a deeper generator, and then skipped entirely.
@@ -13,6 +17,7 @@ sm_state* sm_new_state()
 {
 	auto state = box<sm_state>();
 	state->current = box<_sm_frame, true>();
+	state->opt = _sm_state_opt_default;
 	return state;
 }
 

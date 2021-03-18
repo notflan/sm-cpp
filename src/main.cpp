@@ -50,14 +50,17 @@ int main()
 	auto state = sm_new_state();
 	auto gen = sm_generate(&sm_test);
 
+	sm_state_setopt(state, INTERMEDIATE_RETURNS, false);
+
 	sm_output output;
+	int out_int;
 	while(sm_next(&gen, state, &output)) {
-		int out_int;
 		if(!sm_output_value(output, &out_int))
 			continue;
-		printf("OUT \t\ta = %d\n", out_int);
+		printf("OUT \t\ta = %d\n", out_int); // prints the last one, is this a good or bad thing?
 	}
 
+	printf("\n\nFinal output: %d\n", out_int);
 	sm_free_output(&output);
 
 	sm_free_generator(gen);

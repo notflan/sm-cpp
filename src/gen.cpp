@@ -28,9 +28,11 @@ bool sm_next(sm_generator** gen, sm_state* state, _sm_user* output)
 
 	sm_yield next = (*gen)->current(state);
 
-	// Set the return value to `output`.
-	if(output && state->current->rval) *output = *state->current->rval;
-	else if(output) output->set = false;
+	if(sm_state_getopt(state, INTERMEDIATE_RETURNS) || next == nullptr) {
+		// Set the return value to `output`.
+		if(output && state->current->rval) *output = *state->current->rval;
+		else if(output) output->set = false;
+	}
 
 	switch((uintptr_t)next)
 	{
