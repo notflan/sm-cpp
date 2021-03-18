@@ -15,6 +15,29 @@ inline uint64_t _sm_compute_key(uint64_t name)
 	return _sm_confine_key(name);
 }
 
+template<typename T>
+inline T* _sm_replace(_sm_user* frame, T value)
+{
+	if(frame->set) _sm_free(frame);
+
+	frame->set = true;
+	frame->free = false;
+
+	// Key is left the same
+
+	return _sm_init(frame, value);
+}
+
+template<typename T>
+inline T* _sm_replace_ip(_sm_user** frame, T value)
+{
+
+	if(! (*frame)) {
+		*frame = box<_sm_user, true>();
+	}
+	return _sm_replace(*frame, value);	
+}
+
 template<typename T, typename U>
 inline T* _sm_var(_sm_user_page* user, U name, T init)
 {
@@ -76,6 +99,7 @@ inline sm_yield sm_continue() { return (sm_yield)_sm_noop; }
 #define SM_END } return sm_end()
 
 #define SM_YIELD(v) do { state->current->pc = __LINE__; return (sm_yield)(v); case __LINE__:; } while(0)
+#define SM_YIELD_VALUE(v) do { _sm_replace_ip(&state->current->rval, (v)); SM_YIELD(sm_continue()); } while(0)
 
 #define SM_GENERATOR(name) sm_yield name(sm_state* state)
 

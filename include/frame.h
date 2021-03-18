@@ -34,6 +34,8 @@ struct _sm_user_page {
 
 struct _sm_frame {
 	uint64_t pc;
+
+	_sm_user* rval; // Pointer to the return value of this function 
 	_sm_user_page user;
 
 	_sm_frame* prev;
