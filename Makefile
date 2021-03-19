@@ -1,5 +1,10 @@
 PROJECT=sm
 AUTHOR=Avril (Flanchan) <flanchan@cumallover.me>
+VERSION=1.0.0
+
+ifeq ($(PREFIX),)
+	PREFIX := /usr/local
+endif
 
 SRC_C   = $(wildcard src/*.c)
 SRC_CXX = $(wildcard src/*.cpp)
@@ -9,7 +14,9 @@ TEST_SRC_CXX = $(wildcard src/test/*.cpp)
 
 INCLUDE=include
 
-COMMON_FLAGS= -W -Wall -pedantic -fno-strict-aliasing $(addprefix -I,$(INCLUDE))
+HEADERS=$(INCLUDE)/*.h
+
+COMMON_FLAGS= -D_VERSION=$(VERSION) -W -Wall -pedantic -fno-strict-aliasing $(addprefix -I,$(INCLUDE))
 
 OPT_FLAGS?= -march=native -fgraphite -fopenmp -floop-parallelize-all -ftree-parallelize-loops=4 \
 	    -floop-interchange -ftree-loop-distribution -floop-strip-mine -floop-block \
@@ -51,6 +58,9 @@ debug: | dirs lib$(PROJECT)-debug.so lib$(PROJECT)-debug.a
 
 .PHONY: test
 test: | dirs $(PROJECT)-test
+
+.PHONY: install
+.PHONY: uninstall
 
 # Targets
 
@@ -102,3 +112,15 @@ clean-rebuild:
 clean: clean-rebuild
 	rm -f lib$(PROJECT){-debug,}.{so,a}
 	rm -f $(PROJECT)-test
+
+install: | dirs lib$(PROJECT).a lib$(PROJECT).so
+	install -d $(DESTDIR)$(PREFIX)/lib/
+	install -m 644 lib$(PROJECT).a $(DESTDIR)$(PREFIX)/lib/
+	install -m 755 lib$(PROJECT).so $(DESTDIR)$(PREFIX)/lib/
+	install -d $(DESTDIR)$(PREFIX)/include/$(PROJECT)/
+	install -m 644 $(HEADERS) $(DESTDIR)$(PREFIX)/include/$(PROJECT)/
+
+uninstall:
+	rm $(DESTDIR)$(PREFIX)/lib/lib$(PROJECT).{a,so}
+	ls $(HEADERS) | xargs -I {} basename {} | xargs -I {} rm "$(DESTDIR)$(PREFIX)/include/$(PROJECT)/{}"
+	rmdir $(DESTDIR)$(PREFIX)/include/$(PROJECT)

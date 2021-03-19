@@ -3,11 +3,15 @@
 
 
 #ifdef __cplusplus
+#define EX_C extern "C"
+
 #include <cstdio>
 #define restrict __restrict__
 
 [[noreturn]]
 #else
+#define EX_C
+
 #include <stdio.h>
 
 __attribute__((noreturn))

@@ -112,5 +112,7 @@ inline sm_yield sm_continue() { return (sm_yield)_sm_noop; }
 
 // ---
 
-sm_state* sm_new_state();
-void sm_free_state(sm_state* state);
+extern "C" {
+	sm_state* sm_new_state();
+	void sm_free_state(sm_state* state);
+}

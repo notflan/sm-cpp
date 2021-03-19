@@ -1,6 +1,5 @@
 #include <gen.h>
-
-#define EX_C extern "C"
+#include "dev.h"
 
 struct sm_generator
 {
