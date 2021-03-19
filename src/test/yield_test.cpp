@@ -53,7 +53,7 @@ int main()
 	sm_state_setopt(state, INTERMEDIATE_RETURNS, false);
 
 	sm_output output;
-	int out_int;
+	int out_int=0;
 	while(sm_next(&gen, state, &output)) {
 		if(!sm_output_value(output, &out_int))
 			continue;
