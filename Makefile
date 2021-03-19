@@ -73,7 +73,7 @@ lib$(PROJECT).so: CFLAGS+= -fPIC $(RELEASE_CFLAGS)
 lib$(PROJECT).so: CXXFLAGS += -fPIC $(RELEASE_CXXFLAGS)
 lib$(PROJECT).so: LDFLAGS += $(RELEASE_LDFLAGS)
 lib$(PROJECT).so: $(OBJ)
-	$(CXX) -shared $^ $(RELEASE_CXXFLAGS) -o $@ $(RELEASE_LDFLAGS)
+	$(CXX) -shared $^ $(CXXFLAGS) -o $@ $(LDFLAGS)
 	$(STRIP) $@
 
 lib$(PROJECT)-debug.a: CFLAGS+= $(DEBUG_CFLAGS)
@@ -86,10 +86,10 @@ lib$(PROJECT)-debug.so: CFLAGS+= -fPIC $(DEBUG_CFLAGS)
 lib$(PROJECT)-debug.so: CXXFLAGS += -fPIC $(DEBUG_CXXFLAGS)
 lib$(PROJECT)-debug.so: LDFLAGS += $(DEBUG_LDFLAGS)
 lib$(PROJECT)-debug.so: $(OBJ)
-	$(CXX) -shared $^ $(DEBUG_CXXFLAGS) -o $@ $(DEBUG_LDFLAGS)
+	$(CXX) -shared $^ $(CXXFLAGS) -o $@ $(LDFLAGS)
 
 $(PROJECT)-test-static: $(TEST_OBJ)
-	$(CXX) $^ $(RELEASE_CXXFLAGS) -o $@ -L. -l:lib$(PROJECT).a $(RELEASE_LDFLAGS)
+	$(CXX) $^ $(CXXFLAGS) -o $@ -L. -l:lib$(PROJECT).a $(LDFLAGS)
 
 $(PROJECT)-test: lib$(PROJECT).a
 	$(MAKE) $(PROJECT)-test-static
