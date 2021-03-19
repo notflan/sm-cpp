@@ -1,3 +1,0 @@
-Example of a contextual state machine (generator methods) implementation in basic C++, using mostly C constructs.
-
-See `src/test/main.cpp` for example.

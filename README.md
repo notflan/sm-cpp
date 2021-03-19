@@ -1,3 +1,13 @@
+# libsm
+
+Contextual state machine (generator methods) implementation in basic C++, using mostly C constructs.
+
+(TODO: Explain what is and isn't supported)
+
+## Example
+
+Output values of any type
+``` c++
 #include <sm/state.h>
 #include <sm/gen.h>
 
@@ -36,3 +46,4 @@ int main()
 
   return 0;
 }
+```

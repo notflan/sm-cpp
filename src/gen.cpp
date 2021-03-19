@@ -1,6 +1,8 @@
 #include <gen.h>
 #include "dev.h"
 
+#include <cstdio>
+
 struct sm_generator
 {
 	sm_generator* prev;
