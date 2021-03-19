@@ -35,11 +35,13 @@ inline T sm_output_assume_value(const sm_output& data)
 // A generator method
 struct sm_generator;
 
-/// Create a generator method with this function.
-sm_generator* sm_generate(sm_gen_fun function);
-/// Free a generator method
-void sm_free_generator(sm_generator* generator);
-/// Run this generator until the next yield.
-/// Returns false if the generator ends.
-/// Any output value yielded from the generator is returned in the output pointer, unless the pointer is NULL, in which case the output is discarded.
-bool sm_next(sm_generator** gen, sm_state* state, sm_output* output);
+extern "C" {
+	/// Create a generator method with this function.
+	sm_generator* sm_generate(sm_gen_fun function);
+	/// Free a generator method
+	void sm_free_generator(sm_generator* generator);
+	/// Run this generator until the next yield.
+	/// Returns false if the generator ends.
+	/// Any output value yielded from the generator is returned in the output pointer, unless the pointer is NULL, in which case the output is discarded.
+	bool sm_next(sm_generator** gen, sm_state* state, sm_output* output);
+}

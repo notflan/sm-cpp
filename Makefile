@@ -37,10 +37,10 @@ OBJ = $(OBJ_C) $(OBJ_CXX)
 # Phonies
 
 .PHONY: release
-release: | dirs $(PROJECT)-release
+release: | dirs $(PROJECT).so $(PROJECT).a
 
 .PHONY: debug
-debug: | dirs $(PROJECT)-debug
+debug: | dirs $(PROJECT)-debug.so $(PROJECT)-debug.a
 
 # Targets
 
@@ -53,22 +53,34 @@ obj/c/%.o: %.c
 obj/cxx/%.o: %.cpp
 	$(CXX) -c $< $(CXXFLAGS) -o $@ $(LDFLAGS)
 
-$(PROJECT)-release: CFLAGS+= $(RELEASE_CFLAGS)
-$(PROJECT)-release: CXXFLAGS += $(RELEASE_CXXFLAGS)
-$(PROJECT)-release: LDFLAGS += $(RELEASE_LDFLAGS)
-$(PROJECT)-release: $(OBJ)
-	$(CXX) $^ $(CXXFLAGS) -o $@ $(LDFLAGS)
+$(PROJECT).a: CFLAGS+= $(RELEASE_CFLAGS)
+$(PROJECT).a: CXXFLAGS += $(RELEASE_CXXFLAGS)
+$(PROJECT).a: $(OBJ)
+	ar -rcs $@ $^
 	$(STRIP) $@
 
-$(PROJECT)-debug: CFLAGS+= $(DEBUG_CFLAGS)
-$(PROJECT)-debug: CXXFLAGS += $(DEBUG_CXXFLAGS)
-$(PROJECT)-debug: LDFLAGS += $(DEBUG_LDFLAGS)
-$(PROJECT)-debug: $(OBJ)
-	$(CXX) $^ $(CXXFLAGS) -o $@ $(LDFLAGS)
+
+$(PROJECT).so: CFLAGS+= -fPIC $(RELEASE_CFLAGS)
+$(PROJECT).so: CXXFLAGS += -fPIC $(RELEASE_CXXFLAGS)
+$(PROJECT).so: LDFLAGS += $(RELEASE_LDFLAGS)
+$(PROJECT).so: $(OBJ)
+	gcc -shared $^ -o $@
+	$(STRIP) $@
+
+$(PROJECT)-debug.a: CFLAGS+= $(DEBUG_CFLAGS)
+$(PROJECT)-debug.a: CXXFLAGS += $(DEBUG_CXXFLAGS)
+$(PROJECT)-debug.a: $(OBJ)
+	ar -rcs $@ $^
+
+$(PROJECT)-debug.so: CFLAGS+= -fPIC $(DEBUG_CFLAGS)
+$(PROJECT)-debug.so: CXXFLAGS += -fPIC $(DEBUG_CXXFLAGS)
+$(PROJECT)-debug.so: LDFLAGS += $(DEBUG_LDFLAGS)
+$(PROJECT)-debug.so: $(OBJ)
+	gcc -shared $^ -o $@
 
 clean-rebuild:
 	rm -rf obj
 
 clean: clean-rebuild
-	rm -f $(PROJECT)-{release,debug,pgo}
+	rm -f $(PROJECT){-debug,}.{so,a}
 

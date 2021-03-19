@@ -1,12 +1,14 @@
 #include <gen.h>
 
+#define EX_C extern "C"
+
 struct sm_generator
 {
 	sm_generator* prev;
 	sm_gen_fun current;
 };
 
-sm_generator* sm_generate(sm_gen_fun function)
+EX_C sm_generator* sm_generate(sm_gen_fun function)
 {
 	auto gen = box<sm_generator>();
 	gen->prev = nullptr;
@@ -14,7 +16,7 @@ sm_generator* sm_generate(sm_gen_fun function)
 	return gen;
 }
 
-void sm_free_generator(sm_generator* gen)
+EX_C void sm_free_generator(sm_generator* gen)
 {
 	auto g = unbox(gen);
 	if(g.prev)
@@ -22,7 +24,7 @@ void sm_free_generator(sm_generator* gen)
 }
 
 // Returns false if the generator ends.
-bool sm_next(sm_generator** gen, sm_state* state, _sm_user* output)
+EX_C bool sm_next(sm_generator** gen, sm_state* state, _sm_user* output)
 {
 	if( !(*gen)->current) return false;
 

@@ -2,3 +2,6 @@
 sm-*
 old-examples/
 obj/
+
+*.so
+*.a
